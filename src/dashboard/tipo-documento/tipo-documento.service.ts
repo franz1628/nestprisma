@@ -3,88 +3,89 @@ import { CreateTipoDocumentoDto } from './dto/create-tipo-documento.dto';
 import { UpdateTipoDocumentoDto } from './dto/update-tipo-documento.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { notEqual } from 'assert';
-
+import { TipoDocumento } from '@prisma/client';
+import { TipoDocumentoDto } from './dto/tipo-documento.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TipoDocumentoService {
+  private readonly EXISTE = "El tipo de documento ya existe";
+  private readonly NOEXISTE = "No se encuentra el tipo de documento";
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma:PrismaService){}
 
-  async create(createTipoDocumentoDto: CreateTipoDocumentoDto) {
-    const busca = await this.prisma.tipoDocumento.findFirst(
+  async create(create: CreateTipoDocumentoDto): Promise<TipoDocumentoDto> {
+    const repetido = await this.prisma.tipoDocumento.findFirst(
       {
         where : {
-          descripcion : createTipoDocumentoDto.descripcion,
-          estado:1
+          descripcion : create.descripcion
         }
       }
-    )
+    ) 
 
-    if(busca){
-      throw new ConflictException("Ya existe el tipo de documento");
-      
+    if(repetido){
+      throw new ConflictException(this.EXISTE);
     }
-
-    return await this.prisma.tipoDocumento.create({
-      data:createTipoDocumentoDto
-    })
+    const model = await this.prisma.tipoDocumento.create({data:create});
+    return this.toDto(model);
   }
 
-  async findAll(){
-    return this.prisma.tipoDocumento.findMany();
+  async findAll():Promise<TipoDocumentoDto[]> {
+    const models = await this.prisma.tipoDocumento.findMany();
+
+    return models.map(x=>this.toDto(x));
   }
 
-  async findOne(id: number) {
-    const model = await this.prisma.tipoDocumento.findUnique(
-      {
-        where : {
-          id:id
-        }
-      }
-    )
-
+  async findOne(id: number) : Promise<TipoDocumentoDto>{
+    const model = await this.prisma.tipoDocumento.findFirst({where:{id}});
+    
     if(!model){
-      throw new NotFoundException("No existe el tipo de documento con ese id");
-      
+      throw new NotFoundException(this.NOEXISTE);      
     }
-    return model;
+
+    return this.toDto(model);
   }
 
-  async update(id: number, updateTipoDocumentoDto: UpdateTipoDocumentoDto) {
-    const model = await this.findOne(id);
+  async update(id: number, update: UpdateTipoDocumentoDto) : Promise<TipoDocumentoDto>{
+    await this.findOne(id);
 
-    const busca = await this.prisma.tipoDocumento.findFirst(
+    const repetido = await this.prisma.tipoDocumento.findFirst(
       {
         where : {
-          descripcion : updateTipoDocumentoDto.descripcion,
-          id: {
-            not:id
+          descripcion : update.descripcion,
+          id : {
+            not : id
           }
         }
       }
-    )
+    ) 
 
-    if(busca){
-      throw new ConflictException("Ya existe el tipo de documento");
-      
+    if(repetido){
+      throw new ConflictException(this.EXISTE);
     }
 
     const newModel = await this.prisma.tipoDocumento.update({
-      where: { id: id },
-      data : updateTipoDocumentoDto
+      where : {id},
+      data : update
     })
 
-    return newModel;
+    return this.toDto(newModel);
   }
 
-  async remove(id: number) {
-    const model = await this.findOne(id);
+  async remove(id: number):Promise<TipoDocumentoDto> {
+    await this.findOne(id);
 
     const newModel = await this.prisma.tipoDocumento.update({
-      where: { id: 1 },
+      where : {id},
       data : {estado:0}
     })
 
-    return newModel;
+    return this.toDto(newModel);
+  }
+
+  toDto(model:TipoDocumento){
+    return plainToInstance(TipoDocumentoDto,model,{
+
+    });
   }
 }
