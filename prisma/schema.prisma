@@ -3,76 +3,119 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Alumno {
-  id               Int            @id(map: "PK_Alumno") @default(autoincrement())
-  nombres          String         @db.VarChar(90)
-  apellido_paterno String         @db.VarChar(90)
-  apellido_materno String?        @db.VarChar(90)
-  fecha_nacimiento DateTime       @db.Date
-  numero_documento String         @db.VarChar(20)
-  id_genero        Int
-  id_tipoDocumento Int
-  estado           Int?           @default(1, map: "DF__Alumno__estado__3B75D760")
-  created_at       DateTime       @default(now(), map: "DF__Alumno__created___3C69FB99") @db.DateTime
-  updated_at       DateTime?      @db.DateTime
-  Genero           Genero         @relation(fields: [id_genero], references: [id], onUpdate: NoAction, map: "PK_Alumno_Genero")
-  TipoDocumento    TipoDocumento  @relation(fields: [id_tipoDocumento], references: [id], onUpdate: NoAction, map: "PK_Alumno_TipoDocumento")
-  Alumno_curso     Alumno_curso[]
+model admninistrativo {
+  id              Int       @id @default(autoincrement())
+  nombres         String    @db.VarChar(90)
+  apellidopaterno String    @db.VarChar(90)
+  apellidomaterno String    @db.VarChar(90)
+  idtipodocumento Int
+  numerodocumento String    @db.VarChar(90)
+  fechanacimiento DateTime  @db.Date
+  estado          Int?      @default(1)
+  created_at      DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at      DateTime? @db.Timestamp(6)
 }
 
-model Genero {
-  id          Int       @id(map: "PK_Genero") @default(autoincrement())
-  descripcion String    @db.VarChar(90)
-  estado      Int?      @default(1, map: "Genero_estado_default")
-  created_at  DateTime  @default(now(), map: "DF__Genero__created___398D8EEE") @db.DateTime
-  updated_at  DateTime? @db.DateTime
-  Alumno      Alumno[]
+model alumno {
+  id              Int              @id @default(autoincrement())
+  nombres         String           @db.VarChar(90)
+  apellidopaterno String           @db.VarChar(90)
+  apellidomaterno String           @db.VarChar(90)
+  idtipodocumento Int
+  numerodocumento String           @db.VarChar(90)
+  fechanacimiento DateTime         @db.Date
+  estado          Int?             @default(1)
+  created_at      DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at      DateTime?        @db.Timestamp(6)
+  estadomatricula Int?
+  username        String           @db.VarChar(120)
+  password        String           @db.VarChar(120)
+  curso_alumno    curso_alumno[]
+  curso_profesor  curso_profesor[]
+  nota            nota[]
 }
 
-model TipoDocumento {
-  id          Int       @id(map: "PK_TipoDocumento") @default(autoincrement())
-  descripcion String    @db.VarChar(90)
-  estado      Int       @default(1, map: "DF__TipoDocum__estad__36B12243")
-  created_at  DateTime  @default(now(), map: "DF__TipoDocum__creat__37A5467C") @db.DateTime
-  updated_at  DateTime? @db.DateTime
-  Alumno      Alumno[]
+model curso {
+  id             Int              @id @default(autoincrement())
+  nombre         String           @db.VarChar(90)
+  estado         Int?             @default(1)
+  created_at     DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at     DateTime?        @db.Timestamp(6)
+  curso_alumno   curso_alumno[]
+  curso_profesor curso_profesor[]
+  nota           nota[]
 }
 
-model Alumno_curso {
-  id         Int       @id(map: "PK__Alumno_c__3213E83FFBBADB92") @default(autoincrement())
+model curso_alumno {
+  id         Int       @id @default(autoincrement())
   id_alumno  Int?
   id_curso   Int?
-  id_periodo Int?
-  estado     Int?      @default(1, map: "DF__Alumno_cu__estad__6477ECF3")
-  created_at DateTime? @default(now(), map: "DF__Alumno_cu__creat__656C112C") @db.DateTime
-  updated_at DateTime  @db.DateTime
-  Alumno     Alumno?   @relation(fields: [id_alumno], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "PK_Alumno_curso_Alumno")
-  Curso      Curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "PK_Alumno_curso_Curso")
-  Periodo    Periodo?  @relation(fields: [id_periodo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "PK_Alumno_curso_Periodo")
+  estado     Int?      @default(1)
+  created_at DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+  alumno     alumno?   @relation(fields: [id_alumno], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_alumno_alumno")
+  curso      curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_alumno_curso")
 }
 
-model Curso {
-  id           Int            @id(map: "PK__Curso__3213E83FB84D2854") @default(autoincrement())
-  descripcion  String         @db.VarChar(90)
-  codigo       String         @db.VarChar(90)
-  creditos     String         @db.VarChar(90)
-  estado       Int            @default(1, map: "DF__Curso__estado__5CD6CB2B")
-  created_at   DateTime       @default(now(), map: "DF__Curso__created_a__5DCAEF64") @db.DateTime
-  updated_at   DateTime?      @db.DateTime
-  Alumno_curso Alumno_curso[]
+model nota {
+  id            Int       @id @default(autoincrement())
+  id_alumno     Int?
+  id_curso      Int?
+  id_prueba     Int?
+  valor         Int?
+  valor_reclamo Int?
+  estado        Int?      @default(1)
+  created_at    DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at    DateTime? @db.Timestamp(6)
+  alumno        alumno?   @relation(fields: [id_alumno], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_nota_alumno")
+  curso         curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_nota_curso")
+  prueba        prueba?   @relation(fields: [id_prueba], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_nota_prueba")
 }
 
-model Periodo {
-  id           Int            @id(map: "PK__Periodo__3213E83FC84E21E4") @default(autoincrement())
-  descripcion  String         @db.VarChar(90)
-  anio         Int
-  numero       Int
-  estado       Int            @default(1, map: "DF__Periodo__estado__60A75C0F")
-  created_at   DateTime       @default(now(), map: "DF__Periodo__created__619B8048") @db.DateTime
-  updated_at   DateTime?      @db.DateTime
-  Alumno_curso Alumno_curso[]
+model periodo {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @db.VarChar(90)
+  fechainicio DateTime  @db.Date
+  fechafin    DateTime  @db.Date
+  estado      Int?      @default(1)
+  created_at  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+}
+
+model profesor {
+  id              Int       @id @default(autoincrement())
+  nombres         String    @db.VarChar(90)
+  apellidopaterno String    @db.VarChar(90)
+  apellidomaterno String    @db.VarChar(90)
+  idtipodocumento Int
+  numerodocumento String    @db.VarChar(90)
+  fechanacimiento DateTime  @db.Date
+  estado          Int?      @default(1)
+  created_at      DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at      DateTime? @db.Timestamp(6)
+}
+
+model prueba {
+  id         Int       @id @default(autoincrement())
+  nombre     String    @db.VarChar(90)
+  peso       Int?
+  estado     Int?      @default(1)
+  created_at DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+  nota       nota[]
+}
+
+model curso_profesor {
+  id          Int       @id @default(autoincrement())
+  id_profesor Int?
+  id_curso    Int?
+  estado      Int?      @default(1)
+  created_at  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  curso       curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_curso")
+  alumno      alumno?   @relation(fields: [id_profesor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_profesor")
 }

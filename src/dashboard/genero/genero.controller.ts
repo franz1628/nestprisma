@@ -1,35 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { GeneroService } from './genero.service';
 import { CreateGeneroDto } from './dto/create-genero.dto';
 import { UpdateGeneroDto } from './dto/update-genero.dto';
-import { GeneroDto } from './dto/genero.dto';
 
 @Controller('genero')
 export class GeneroController {
   constructor(private readonly generoService: GeneroService) {}
 
   @Post()
-  create(@Body() create: CreateGeneroDto) : Promise<GeneroDto> {
-    return this.generoService.create(create);
+  create(@Body() createGeneroDto: CreateGeneroDto) {
+    return this.generoService.create(createGeneroDto);
   }
 
   @Get()
-  findAll():Promise<GeneroDto[]> {
+  findAll() {
     return this.generoService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) :Promise<GeneroDto> {
+  findOne(@Param('id') id: string) {
     return this.generoService.findOne(+id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() update: UpdateGeneroDto):Promise<GeneroDto>  {
-    return this.generoService.update(+id, update);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateGeneroDto: UpdateGeneroDto) {
+    return this.generoService.update(+id, updateGeneroDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string):Promise<GeneroDto>  {
+  remove(@Param('id') id: string) {
     return this.generoService.remove(+id);
   }
 }

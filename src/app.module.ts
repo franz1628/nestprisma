@@ -1,17 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TipoDocumentoModule } from './dashboard/tipo-documento/tipo-documento.module';
-import { AlumnoModule } from './dashboard/alumno/alumno.module';
-import { GeneroModule } from './dashboard/genero/genero.module';
-import { PeriodoModule } from './dashboard/periodo/periodo.module';
-import { CursoModule } from './dashboard/curso/curso.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filters';
+import { AlumnoModule } from './dashboard/alumno/alumno.module';
+import { AuthModule } from './login/auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { GeneroModule } from './dashboard/genero/genero.module';
 
 @Module({
-  imports: [TipoDocumentoModule, AlumnoModule, GeneroModule, PeriodoModule, CursoModule],
+  imports: [ 
+    ConfigModule.forRoot({
+      isGlobal: true, 
+    }),
+    AlumnoModule, 
+    AuthModule, GeneroModule],
   controllers: [AppController],
   providers: [
     AppService,

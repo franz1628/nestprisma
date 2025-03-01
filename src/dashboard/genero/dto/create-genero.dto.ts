@@ -4,5 +4,5 @@ import { IsString } from "class-validator";
 export class CreateGeneroDto {
     @ApiProperty()
     @IsString()
-    descripcion!: string;
+    descripcion: string='';
 }
