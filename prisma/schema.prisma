@@ -119,3 +119,11 @@ model curso_profesor {
   curso       curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_curso")
   alumno      alumno?   @relation(fields: [id_profesor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_profesor")
 }
+
+model genero {
+  descripcion String?   @db.VarChar(100)
+  estado      Int?      @default(1)
+  created_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  id          Int       @id(map: "genero_pk") @default(autoincrement())
+}
