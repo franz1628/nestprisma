@@ -10,11 +10,13 @@ export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>(); // Obtener la solicitud
     return next.handle().pipe(
-      map((data) => {
+      map((response) => {
+        const { data, message, state } = response ?? {}; // Extraer `data` y `message` si existen
         return new ResponseDto(
+          state || 1,
           HttpStatus.OK,
-          data,
-          'Operación exitosa',
+          data || response, // Si no hay `data`, se asume que `response` es la data
+          message || 'Operación exitosa', // Si no hay `message`, se usa un genérico
           request.url,
         );
       }),

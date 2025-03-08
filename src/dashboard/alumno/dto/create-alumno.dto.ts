@@ -20,27 +20,31 @@ export class CreateAlumnoDto {
   
     @ApiProperty()
     @IsString()
-    apellidopaterno: string='';
+    apellido_paterno: string='';
   
     @ApiProperty()
     @IsString()
-    apellidomaterno: string='';
+    apellido_materno: string='';
   
     @ApiProperty()
     @IsInt({message: 'El estado debe ser un número entero'})
-    idtipodocumento: number=1;
+    id_tipo_documento: number=1;
+
+    @ApiProperty()
+    @IsInt({message: 'El genero debe ser un número entero'})
+    id_genero: number=1;
   
     @ApiProperty()
     @IsString()
-    numerodocumento: string='';
+    numero_documento: string='';
   
     @ApiProperty()
     @IsDateString({}, { message: 'La fecha de nacimiento debe tener un formato ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)' })
-    fechanacimiento: Date = new Date();
+    fecha_nacimiento: Date = new Date();
   
     @ApiProperty()
     @IsInt({message: 'El estado debe ser un número entero'})
-    estadomatricula: number=1;
+    estado_matricula: number=1;
 
     
   }

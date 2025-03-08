@@ -21,23 +21,26 @@ model admninistrativo {
 }
 
 model alumno {
-  id              Int              @id @default(autoincrement())
-  nombres         String           @db.VarChar(90)
-  apellidopaterno String           @db.VarChar(90)
-  apellidomaterno String           @db.VarChar(90)
-  idtipodocumento Int
-  numerodocumento String           @db.VarChar(90)
-  fechanacimiento DateTime         @db.Date
-  estado          Int?             @default(1)
-  created_at      DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at      DateTime?        @db.Timestamp(6)
-  estadomatricula Int?
-  username        String           @db.VarChar(120)
-  password        String           @db.VarChar(120)
-  email           String           @db.VarChar(120)
-  curso_alumno    curso_alumno[]
-  curso_profesor  curso_profesor[]
-  nota            nota[]
+  id                Int              @id @default(autoincrement())
+  nombres           String           @db.VarChar(90)
+  apellido_paterno  String           @db.VarChar(90)
+  apellido_materno  String           @db.VarChar(90)
+  id_tipo_documento Int
+  numero_documento  String           @db.VarChar(90)
+  fecha_nacimiento  DateTime         @db.Date
+  estado            Int?             @default(1)
+  created_at        DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at        DateTime?        @db.Timestamp(6)
+  estado_matricula  Int?
+  username          String           @db.VarChar(120)
+  password          String           @db.VarChar(120)
+  email             String           @db.VarChar(120)
+  id_genero         Int              @default(1)
+  genero            genero           @relation(fields: [id_genero], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_alumno_genero")
+  tipo_documento    tipo_documento   @relation(fields: [id_tipo_documento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_alumno_tipo_documento")
+  curso_alumno      curso_alumno[]
+  curso_profesor    curso_profesor[]
+  nota              nota[]
 }
 
 model curso {
@@ -124,7 +127,17 @@ model curso_profesor {
 model genero {
   descripcion String?   @db.VarChar(100)
   estado      Int?      @default(1)
-  created_at  DateTime? @db.Timestamp(6)
-  updated_at  DateTime? @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
   id          Int       @id(map: "genero_pk") @default(autoincrement())
+  alumno      alumno[]
+}
+
+model tipo_documento {
+  id          Int       @id(map: "tipo_documento_pk") @default(autoincrement())
+  descripcion String?   @db.VarChar(120)
+  estado      Int?      @default(1)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  alumno      alumno[]
 }

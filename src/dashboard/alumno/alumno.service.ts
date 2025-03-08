@@ -3,6 +3,8 @@ import { CreateAlumnoDto } from './dto/create-alumno.dto';
 import { UpdateAlumnoDto } from './dto/update-alumno.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import bcrypt from "bcrypt";
+import { plainToInstance } from 'class-transformer';
+import { AlumnoDto } from './dto/alumno.dto';
 
 @Injectable()
 export class AlumnoService {
@@ -18,7 +20,7 @@ export class AlumnoService {
   }
 
   async findAll() {
-    const models = await this.prisma.alumno.findMany();
+    const models = await this.prisma.alumno.findMany({include: {genero : true, tipo_documento: true}});
     return models;
   }
 
@@ -31,7 +33,7 @@ export class AlumnoService {
   }
 
   async update(id: number, updateAlumnoDto: UpdateAlumnoDto) {
-    return await this.prisma.alumno.update(
+    const alumno =  await this.prisma.alumno.update(
       {
         where: {
           id: id,
@@ -39,13 +41,20 @@ export class AlumnoService {
         data: updateAlumnoDto
       }
     )
+
+    return plainToInstance(AlumnoDto, alumno);
   }
 
   async remove(id: number) {
-    return await this.prisma.alumno.delete({
-      where: {
-        id: id,
+    const alumno =  await this.prisma.alumno.update(
+      {
+        where: {
+          id: id,
+        },
+        data: { estado: 0 }
       }
-    })
+    )
+
+    return plainToInstance(AlumnoDto, alumno);
   }
 }

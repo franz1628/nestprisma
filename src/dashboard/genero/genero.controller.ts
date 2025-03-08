@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpStatus, HttpException } from '@nestjs/common';
 import { GeneroService } from './genero.service';
 import { CreateGeneroDto } from './dto/create-genero.dto';
 import { UpdateGeneroDto } from './dto/update-genero.dto';
+import { ResponseDto } from 'src/common/dtos/responseDto';
 
 @Controller('genero')
 export class GeneroController {
@@ -23,8 +24,15 @@ export class GeneroController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGeneroDto: UpdateGeneroDto) {
-    return this.generoService.update(+id, updateGeneroDto);
+  async update(@Param('id') id: string, @Body() updateGeneroDto: UpdateGeneroDto) {
+    
+    const updatedGenero = await this.generoService.update(+id, updateGeneroDto);
+
+    return {
+      state:1,
+      data: updatedGenero,
+      message: 'Género actualizado correctamente',
+    };
   }
 
   @Delete(':id')
