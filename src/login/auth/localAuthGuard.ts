@@ -7,8 +7,6 @@ import { Strategy } from 'passport-local';
 @Injectable()
 export class LocalAuthGuard extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    console.log('wrhwrh');
-    
     super();
   } 
 

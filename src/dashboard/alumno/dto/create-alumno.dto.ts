@@ -2,6 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsDateString, IsInt, IsNumber, IsString } from "class-validator";
 
 export class CreateAlumnoDto {
+    @ApiProperty()
+    @IsString()
+    email: string='';
 
     @ApiProperty()
     @IsString()

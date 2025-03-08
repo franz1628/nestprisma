@@ -34,6 +34,7 @@ model alumno {
   estadomatricula Int?
   username        String           @db.VarChar(120)
   password        String           @db.VarChar(120)
+  email           String           @db.VarChar(120)
   curso_alumno    curso_alumno[]
   curso_profesor  curso_profesor[]
   nota            nota[]

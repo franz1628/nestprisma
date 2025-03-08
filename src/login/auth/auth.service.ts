@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'prisma/prisma.service';
 import bcrypt from "bcrypt";
+import { AuthRequest } from './dto/auth-request';
+import { AlumnoDto } from 'src/dashboard/alumno/dto/alumno.dto';
+import { AuthResponse } from './dto/auth-response';
+import { AuthError } from './dto/auth-error';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<AlumnoDto | null> {
     const user = await this.prisma.alumno.findFirst({ where: {  username } });
     if (user && await bcrypt.compare(pass, user.password)) {
       const { password, ...result } = user;
@@ -19,16 +23,25 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.id };
-    return {
-      token: this.jwtService.sign(payload),
-      tokenType: 'Bearer',
-      username : 'admin',
-      email: 'admin@admin.com',
-      role : 'ADMIN'
-    };
+  async login(user: AuthRequest) :  Promise<AuthResponse | AuthError> {
+    const alumno = await this.validateUser(user.username, user.password);
+    if (alumno) {
+      const payload = { username: user.username, sub: user.password };
+  
+      return {
+        token: this.jwtService.sign(payload),
+        tokenType: 'Bearer',
+        username : alumno.username,
+        email: alumno.email,
+        role : 'ADMIN'
+      };
+    }else{
+      return {
+        error: 'Usuario o contraseña',
+        message: 'Usuario o contraseña incorrectos',
+        statusCode : 401
+      }
+    }
   }
-
 
 }
