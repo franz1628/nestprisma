@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsDateString, IsInt, IsNumber, IsString } from "class-validator";
+import { IsDate, IsDateString, IsEmail, IsInt, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateAlumnoDto {
     @ApiProperty()
     @IsString()
+    @IsEmail( {}, { message: 'El email debe ser un correo electrónico válido' })
     email: string='';
 
     @ApiProperty()
@@ -36,6 +37,8 @@ export class CreateAlumnoDto {
   
     @ApiProperty()
     @IsString()
+    @MinLength(8, {message: 'El número de documento debe tener como mínimo 8 caracteres'})
+    @MaxLength(12, {message: 'El número de documento debe tener como máximo 12 caracteres'})
     numero_documento: string='';
   
     @ApiProperty()

@@ -9,6 +9,8 @@ import { AuthModule } from './login/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GeneroModule } from './dashboard/genero/genero.module';
 import { TipoDocumentoModule } from './dashboard/tipo_documento/tipo_documento.module';
+import { CursoModule } from './dashboard/curso/curso.module';
+import { ImageModule } from './common/image/image.module';
 
 @Module({
   imports: [ 
@@ -16,7 +18,7 @@ import { TipoDocumentoModule } from './dashboard/tipo_documento/tipo_documento.m
       isGlobal: true, 
     }),
     AlumnoModule, 
-    AuthModule, GeneroModule, TipoDocumentoModule],
+    AuthModule, GeneroModule, TipoDocumentoModule, CursoModule, ImageModule],
   controllers: [AppController],
   providers: [
     AppService,

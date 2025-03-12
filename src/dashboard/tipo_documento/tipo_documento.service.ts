@@ -22,11 +22,17 @@ export class TipoDocumentoService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.tipo_documento.findUnique({
+    const model = await this.prisma.tipo_documento.findUnique({
       where: {
         id: id,
       },
     });
+
+    if(!model){
+      throw new Error('Tipo documento no encontrado');
+    }
+
+    return model;
   }
 
   async update(id: number, update: UpdateTipoDocumentoDto) {

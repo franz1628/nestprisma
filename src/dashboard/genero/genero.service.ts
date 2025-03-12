@@ -22,11 +22,17 @@ export class GeneroService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.genero.findUnique({
+    const model = await this.prisma.genero.findUnique({
       where: {
         id: id,
       },
     });
+
+    if(!model){
+      throw new Error('Genero no encontrado');
+    }
+
+    return model;
   }
 
   async update(id: number, update: UpdateGeneroDto) {
@@ -41,11 +47,16 @@ export class GeneroService {
   }
 
   async remove(id: number) {
-    return await this.prisma.genero.delete({
-      where: {
-        id: id,
+    const model =  await this.prisma.genero.update(
+      {
+        where: {
+          id: id,
+        },
+        data: { estado: 0 }
       }
-    });
+    )
+
+    return plainToInstance(GeneroDto, model);
   }
 
 }
