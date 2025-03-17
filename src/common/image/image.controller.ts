@@ -22,7 +22,7 @@ export class ImageController {
   async uploadFile(
     @UploadedFile(
       new ParseFilePipe({ validators: [ new MaxFileSizeValidator({ maxSize: 1000000 })], exceptionFactory() {throw Error('Error de tamanio') } }),
-      new ParseFilePipe({ validators: [ new FileTypeValidator({ fileType: 'image/png' })], exceptionFactory() {throw Error('Error de formato')},
+      new ParseFilePipe({ validators: [ new FileTypeValidator({ fileType: 'image/jpeg' })], exceptionFactory() {throw Error('Error de formato')},
       })
     ) file: Express.Multer.File,
     @Body() body: UploadAlumnoDto,

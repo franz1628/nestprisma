@@ -30,7 +30,8 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads' });
+  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+  console.log('Archivos estáticos servidos desde:', join(process.cwd(), 'uploads'));
 
 
   app.useGlobalPipes(
