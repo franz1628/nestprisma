@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,7 @@ model admninistrativo {
   numerodocumento String    @db.VarChar(90)
   fechanacimiento DateTime  @db.Date
   estado          Int?      @default(1)
-  created_at      DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
   updated_at      DateTime? @db.Timestamp(6)
 }
 
@@ -29,7 +29,7 @@ model alumno {
   numero_documento  String           @db.VarChar(90)
   fecha_nacimiento  DateTime         @db.Date
   estado            Int?             @default(1)
-  created_at        DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at        DateTime?        @default(now()) @db.Timestamp(6)
   updated_at        DateTime?        @db.Timestamp(6)
   estado_matricula  Int?
   username          String           @db.VarChar(120)
@@ -47,7 +47,7 @@ model curso {
   id             Int              @id @default(autoincrement())
   nombre         String           @db.VarChar(90)
   estado         Int?             @default(1)
-  created_at     DateTime?        @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
   updated_at     DateTime?        @db.Timestamp(6)
   curso_alumno   curso_alumno[]
   curso_profesor curso_profesor[]
@@ -59,7 +59,7 @@ model curso_alumno {
   id_alumno  Int?
   id_curso   Int?
   estado     Int?      @default(1)
-  created_at DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @db.Timestamp(6)
   alumno     alumno?   @relation(fields: [id_alumno], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_alumno_alumno")
   curso      curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_alumno_curso")
@@ -73,7 +73,7 @@ model nota {
   valor         Int?
   valor_reclamo Int?
   estado        Int?      @default(1)
-  created_at    DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
   alumno        alumno?   @relation(fields: [id_alumno], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_nota_alumno")
   curso         curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_nota_curso")
@@ -86,7 +86,7 @@ model periodo {
   fechainicio DateTime  @db.Date
   fechafin    DateTime  @db.Date
   estado      Int?      @default(1)
-  created_at  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @db.Timestamp(6)
 }
 
@@ -99,7 +99,7 @@ model profesor {
   numerodocumento String    @db.VarChar(90)
   fechanacimiento DateTime  @db.Date
   estado          Int?      @default(1)
-  created_at      DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
   updated_at      DateTime? @db.Timestamp(6)
 }
 
@@ -108,7 +108,7 @@ model prueba {
   nombre     String    @db.VarChar(90)
   peso       Int?
   estado     Int?      @default(1)
-  created_at DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @db.Timestamp(6)
   nota       nota[]
 }
@@ -118,7 +118,7 @@ model curso_profesor {
   id_profesor Int?
   id_curso    Int?
   estado      Int?      @default(1)
-  created_at  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @db.Timestamp(6)
   curso       curso?    @relation(fields: [id_curso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_curso")
   alumno      alumno?   @relation(fields: [id_profesor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_curso_profesor_profesor")
@@ -129,12 +129,12 @@ model genero {
   estado      Int?      @default(1)
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
-  id          Int       @id(map: "genero_pk") @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   alumno      alumno[]
 }
 
 model tipo_documento {
-  id          Int       @id(map: "tipo_documento_pk") @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   descripcion String?   @db.VarChar(120)
   estado      Int?      @default(1)
   created_at  DateTime? @default(now()) @db.Timestamp(6)

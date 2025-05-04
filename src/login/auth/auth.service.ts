@@ -27,7 +27,8 @@ export class AuthService {
     const alumno = await this.validateUser(user.username, user.password);
     if (alumno) {
       const payload = { username: user.username, sub: user.password };
-  
+      console.log(payload);
+      
       return {
         token: this.jwtService.sign(payload),
         tokenType: 'Bearer',
